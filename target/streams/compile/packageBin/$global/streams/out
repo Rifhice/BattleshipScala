@@ -2,12 +2,16 @@
 [0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
 [0m[[0m[0mdebug[0m] [0m[0m	GameState$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\Kevin\Desktop\BatailleNavale\target\scala-2.12\classes\GameState$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	CoinFlip$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\Kevin\Desktop\BatailleNavale\target\scala-2.12\classes\CoinFlip$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	BatailleNavale$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\Kevin\Desktop\BatailleNavale\target\scala-2.12\classes\BatailleNavale$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	BatailleNavale$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\Kevin\Desktop\BatailleNavale\target\scala-2.12\classes\BatailleNavale$delayedInit$body.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PlayerState.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\Kevin\Desktop\BatailleNavale\target\scala-2.12\classes\PlayerState.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	PlayerState$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\Kevin\Desktop\BatailleNavale\target\scala-2.12\classes\PlayerState$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	BatailleNavale.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\Kevin\Desktop\BatailleNavale\target\scala-2.12\classes\BatailleNavale.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	GameState.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\Kevin\Desktop\BatailleNavale\target\scala-2.12\classes\GameState.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	CoinFlip$delayedInit$body.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\Kevin\Desktop\BatailleNavale\target\scala-2.12\classes\CoinFlip$delayedInit$body.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	CoinFlip.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  C:\Users\Kevin\Desktop\BatailleNavale\target\scala-2.12\classes\CoinFlip.class[0m
 [0m[[0m[0minfo[0m] [0m[0mDone packaging.[0m

@@ -1,2 +1,7 @@
-[0m[[0m[33mwarn[0m] [0m[0mthere were four deprecation warnings (since 2.12.0); re-run with -deprecation for details[0m
-[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\Kevin\Desktop\BatailleNavale\src\main\scala\BatailleNavale.scala:13:66: ')' expected but ':' found.[0m
+[0m[[0m[31merror[0m] [0m[0m    def mainLoop(gameState: GameState, player1Play: (currentState: PlayerState) => (Int,Int), player2Play: (currentState: PlayerState) => (Int,Int)) {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0mC:\Users\Kevin\Desktop\BatailleNavale\src\main\scala\BatailleNavale.scala:21:1: ')' expected but '}' found.[0m
+[0m[[0m[31merror[0m] [0m[0m}[0m
+[0m[[0m[31merror[0m] [0m[0m^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

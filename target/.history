@@ -4,3 +4,4 @@ reload
 test
 compile
 run
+~run
