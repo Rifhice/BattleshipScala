@@ -1,17 +1,24 @@
+package battleship
+
 import scala.annotation.tailrec
 import scala.util.Random
 import scala.collection.mutable.ListBuffer
 
 case class GameState(isPlayerOneTurn: Boolean, playerOneState: PlayerState, playerTwoState: PlayerState)
-case class PlayerState()
 
 object BatailleNavale extends App {
-    val s = GameState(true, PlayerState(), PlayerState())
+    //Get boats from playerOne
+    BoatCreator.getStartingBoatPosition(3, true)
+    val playerOneState = PlayerState(List[Boat](), List[Position](), List[Position]())
+    //Get boats from playerTwo
+    val playerTwoState = PlayerState(List[Boat](), List[Position](), List[Position]())
+    val s = GameState(true, playerOneState, playerTwoState)
     println(s)
-    mainLoop(s, userInput, playTest)
-    @tailrec
+    println(Boat(true, List[Position](new Position(0, 0, false))))
+    //mainLoop(s, userInput, playTest)
+    //@tailrec
     def mainLoop(gameState: GameState, player1Play: (PlayerState) => (Int,Int), player2Play: (PlayerState) => (Int,Int)) {
-      if(GameState.isPlayerOneTurn){
+      if(gameState.isPlayerOneTurn){
         println(player1Play(gameState.playerOneState))
         println(player2Play(gameState.playerTwoState))
       }
@@ -20,7 +27,7 @@ object BatailleNavale extends App {
         println(player1Play(gameState.playerOneState))
       }
       println("Hey")
-      mainLoop(gameState, userInput, playTest)
+      //mainLoop(gameState, userInput, playTest)
     }
     def playTest(currentState: PlayerState) = (1,3)
     def userInput(currentState: PlayerState): (Int, Int) = (scala.io.StdIn.readInt(), scala.io.StdIn.readInt())
