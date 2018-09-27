@@ -8,7 +8,8 @@ case class GameState(isPlayerOneTurn: Boolean, playerOneState: PlayerState, play
 
 object BatailleNavale extends App {
     //Get boats from playerOne
-    BoatCreator.getStartingBoatPosition(3, true)
+    println(BoatCreator.createAllBoats())
+    println(BoatCreator.createBoat(BoatCreator.getStartingBoatPosition(3, true), 3, true))
     val playerOneState = PlayerState(List[Boat](), List[Position](), List[Position]())
     //Get boats from playerTwo
     val playerTwoState = PlayerState(List[Boat](), List[Position](), List[Position]())
