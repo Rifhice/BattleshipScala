@@ -11,9 +11,15 @@ object BatailleNavale extends App {
     mainLoop(s, userInput, playTest)
     @tailrec
     def mainLoop(gameState: GameState, player1Play: (PlayerState) => (Int,Int), player2Play: (PlayerState) => (Int,Int)) {
-      println(player1Play(gameState.playerOneState))
+      if(GameState.isPlayerOneTurn){
+        println(player1Play(gameState.playerOneState))
+        println(player2Play(gameState.playerTwoState))
+      }
+      else{
+        println(player2Play(gameState.playerTwoState))
+        println(player1Play(gameState.playerOneState))
+      }
       println("Hey")
-      println(player2Play(gameState.playerTwoState))
       mainLoop(gameState, userInput, playTest)
     }
     def playTest(currentState: PlayerState) = (1,3)
