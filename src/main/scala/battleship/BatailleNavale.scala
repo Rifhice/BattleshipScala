@@ -4,9 +4,52 @@ import scala.annotation.tailrec
 import scala.util.Random
 import scala.collection.mutable.ListBuffer
 
-case class GameState(isPlayerOneTurn: Boolean, playerOneState: PlayerState, playerTwoState: PlayerState)
+case class GameState(isPlayerOneTurn: Boolean, playerOne: Player, playerTwo: Player)
 
 object BatailleNavale extends App {
+    //def createPlayers(): (Player, Player) = {
+    //  Select game mode
+    //  Create the players
+    //}
+    //def play(player: Player, opponent: Player) = {
+        //val position = player.input(r)
+        //if(player.shoot(shot, opponent)){
+            //Shot hitted update player accordingly
+        //}
+        //else{
+            //Shot missed update player accordingly
+        //}
+        //if player is human
+            //display player state
+        //if Victory
+            //Reverse order in gamestate
+            //Give the options to change mode
+            //End
+        //else
+            //If two humans
+                //Await for input to change player
+                //display opponent state
+            //play(opponent, player)
+    //def main(gameState: Gamestate, random: Random)
+        //Place boats
+        //if gamestate.isPlayerOneTurn
+            //play(gameState.playerOne, gameState.playerTwo)
+        //else
+            //play(gameState.playerTwo, gameState.playerOne)
+        //if one is human
+            //prompt for new game mode
+            //If no
+                //Change starting player
+                //init random
+                //main(newGameState, random)
+            //If yes 
+                //val players = createPlayers()
+                //Init random
+                //main(GameState(true,players._1, players._2), random)
+    //val players = createPlayers()
+    //Init random
+    //main(GameState(true,players._1, players._2), random)
+
     //Get boats from playerOne
     println(BoatCreator.createAllBoats())
     println(BoatCreator.createBoat(BoatCreator.getStartingBoatPosition(3, true), 3, true))
@@ -15,7 +58,7 @@ object BatailleNavale extends App {
     val playerTwoState = PlayerState(List[Boat](), List[Position](), List[Position]())
     val s = GameState(true, playerOneState, playerTwoState)
     println(s)
-    println(Boat(true, List[Position](new Position(0, 0, false))))
+    println(Boat(true, List[Position](new Position(0, 0))))
     //mainLoop(s, userInput, playTest)
     //@tailrec
     def mainLoop(gameState: GameState, player1Play: (PlayerState) => (Int,Int), player2Play: (PlayerState) => (Int,Int)) {
