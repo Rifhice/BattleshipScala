@@ -16,6 +16,11 @@ object Input{
         }
     }
 
+    def getPosition(): Position = { 
+        val tuple = getIntTuple()
+        Position(tuple._1, tuple._2, false)
+    }
+
     def getDirection: Boolean = {
         try{
             print("Type V for vertical or H for horizontal : ")
@@ -29,6 +34,23 @@ object Input{
         }
         catch{
             case err: StringIndexOutOfBoundsException => getDirection
+        }
+    }
+
+    def select(options: List[String]): Int = {
+        println("Please select :")
+        options.indices.foreach(i => println("[" + (i+1) + "]" + " " + options(i)))
+        try{
+            val x = scala.io.StdIn.readInt()
+            if(x > options.size || x < 1){
+                select(options)
+            }
+            else{
+                x
+            }
+        }
+        catch{
+            case err: NumberFormatException => select(options)
         }
     }
 }
