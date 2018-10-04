@@ -1,143 +1,110 @@
 package battleship
 
+import battleship.input._
+import battleship.output._
+import battleship.model._
 import scala.annotation.tailrec
 import scala.util.Random
-import scala.collection.mutable.ListBuffer
 
-case class GameState(isPlayerOneTurn: Boolean, playerOne: Player, playerTwo: Player)
+case class GameState(isPlayerOneTurn: Boolean, playerOne: Player, playerTwo: Player, gamemode: (Int, Int))
 
 object BatailleNavale extends App {
-    /*
-    val boats = List[Boat](Boat(true, List(Position(5,5), Position(5,6))))
-    val hitPosition = List[Position](Position(2,3), Position(5,5))
-    val shotPosition = List[Position](Position(5,5),Position(6,3))
-    val hitShotPosition = List[Position](Position(1,5),Position(2,3))
-    val playerState = PlayerState(boats, hitPosition, shotPosition ,hitShotPosition)*/
-    def promptForGamemode(): Int = {
-        Input.select(List[String]("Human vs Human","Human vs Ai","Ai vs Ai (not playable)"))
+
+    val UI:GUI = TerminalGUI()
+    val In:Input = TerminalInput()
+
+    def createOneHumanPlayer(random: Random, name: String): Player = {
+        UI.display(name + " enter your boats.")
+        val player1 = Player(name, true, (random) => In.getPosition, In.promptAllBoats)
+        In.pressAnyKey(name + " press enter when you've finished reading !")
+        player1
     }
-    def createPlayers(random : Random): (Player, Player) = {
-        val gamemode = promptForGamemode()
-        gamemode match{
+
+    def createPlayers(random : Random, gamemode : (Int,Int)): (Player, Player) = {
+        gamemode._1 match{
             case 1 => {
-                println("H v H") //Create two  player with prompt as input
-                println("Player 1 enter your boats.")
-                val player1 = Player("Joueur 1", true, (random) => Input.getPosition, BoatCreator.createAllBoats)
-                println("Player 2 enter your boats.")
-                val player2 = Player("Joueur 2", true, (random) => Input.getPosition, BoatCreator.createAllBoats)
+                val player1 = createOneHumanPlayer(random, "Player 1")
+                UI.hideDisplay()
+                val player2 = createOneHumanPlayer(random, "Player 2")
+                UI.hideDisplay()
                 (player1, player2)
             }
             case 2 => {
-                val AiDifficulty = Input.select(List[String]("easy","medium","hard"))
-                println("Player 1 enter your boats.")
-                val player1 = Player("Joueur 1", true, (random) => Input.getPosition, BoatCreator.createAllBoats)
-                val player2 = Player("Joueur 2", false, (random) => Position(random.nextInt(10), random.nextInt(10)), List[Boat](Boat(true, List(Position(5,5), Position(5,6)))))
-                player2.playerState.boats.foreach(boat => println(boat.positions))
+                val AiDifficulty = gamemode._2
+                val player1 = createOneHumanPlayer(random, "Player 1")
+                val player2 = Player("Joueur 2", false, (random) => Position(random.nextInt(Grid.width), random.nextInt(Grid.height)), List[Boat](Boat(true, List(Position(5,5)))))
                 (player1, player2)
-            }
-            case 3 => {
-                (Player("Joueur 1", false, (random) => Position(random.nextInt(10), random.nextInt(10)), List[Boat](Boat(true, List(Position(5,5), Position(5,6))))), Player("Joueur 2", false, (random) => Position(random.nextInt(10), random.nextInt(10)), List[Boat](Boat(true, List(Position(5,5), Position(5,6))))) )
             }
         }
     }
     @tailrec
-    def play(player: Player, opponent: Player, random: Random): Player = {
-        val position = player.input(random)
-        println(player.name + " just shot at " + position.x + " " + position.y)
-        val shotResult = player.shoot(position, opponent)
-        shotResult match {
-            case 0 => println("It's a miss")
-            case 1 => println("It's a hit")
-            case 2 => {
-                println("It's a sink")
-                if(opponent.isDead){
-                    println(player.name + " just won !")
-                    return player
-                }
-            }
+    def play(player: Player, opponent: Player, random: Random, turn: Int): (Player, Int) = {
+        if(opponent.isHuman && turn != 1){
+            In.pressAnyKey(opponent.name + " press enter when you've finished reading !")
         }
-        //if(player.isHuman)
-            //UI.displayGrid(10, 10, player.playerState)
         if(player.isHuman && opponent.isHuman){
-            println("Update the display by cleaning it !")
+            UI.hideDisplay()
+            In.pressAnyKey("Press enter when " + player.name + " is ready !")
         }
-        play(opponent, player, random)
-    }
-    def main(gameState: GameState, random: Random) = {
-        if(gameState.isPlayerOneTurn)
-            play(gameState.playerOne, gameState.playerTwo, random)
-        else
-            play(gameState.playerTwo, gameState.playerOne, random)
-        if(gameState.playerOne.isHuman || gameState.playerTwo.isHuman)
-            println("Do you want to change gamemode ?")
-            //If no
-                //Change starting player
-                //init random
-                //main(newGameState, random)
-            //If yes 
-                //val players = createPlayers()
-                //Init random
-                //main(GameState(true,players._1, players._2), random)
+        if(player.isHuman){
+            UI.displayGrid(Grid.width, Grid.height, player.playerState)
+            UI.display(player.name + " please enter a position to shoot !")
         }
-    val random = Random
-    val players = createPlayers(random)
-    main(GameState(random.nextInt(2) == 0, players._1, players._2), random)
-    //val players = createPlayers()
-    //Init random
-    //main(GameState(true,players._1, players._2), random)
-
-    //Get boats from playerOne
-    /*println(BoatCreator.createAllBoats())
-    println(BoatCreator.createBoat(BoatCreator.getStartingBoatPosition(3, true), 3, true))
-    val playerOneState = Player(List[Boat](), List[Position](), List[Position]())
-    //Get boats from playerTwo
-    val playerTwoState = PlayerState(List[Boat](), List[Position](), List[Position]())
-    val s = GameState(true, playerOneState, playerTwoState)
-    println(s)
-    println(Boat(true, List[Position](new Position(0, 0))))
-    //mainLoop(s, userInput, playTest)
-    //@tailrec
-    def mainLoop(gameState: GameState, player1Play: (Player) => (Int,Int), player2Play: (PlayerState) => (Int,Int)) {
-      if(gameState.isPlayerOneTurn){
-        println(player1Play(gameState.playerOne))
-        println(player2Play(gameState.playerTwo))
-      }
-      else{
-        println(player2Play(gameState.playerTwo))
-        println(player1Play(gameState.playerOne))
-      }
-      println("Hey")
-      //mainLoop(gameState, userInput, playTest)
-    }
-    def playTest(currentState: PlayerState) = (1,3)
-    def userInput(currentState: PlayerState): (Int, Int) = (scala.io.StdIn.readInt(), scala.io.StdIn.readInt())*/
-}
-/*
-        println("Enter H for head  | T for tail | N to restart | I to see past game | q to quit : ")
-        val flips = gameState.numFlips + 1
-        var correct = gameState.numCorrect
-        val input = userInput
-        input match{
-            case 'H' | 'T' => {
-                val toss = tossCoin(r)
-                toss match {
-                    case 0 => if(input == 'T') correct = correct + 1
-                    case 1 => if(input == 'H') correct = correct + 1
+        val position = player.input(random)
+        UI.display(player.name + " just shot at " + position.x + " " + position.y)
+        val shotResult = player.shoot(position, opponent)
+        val newPlayer = shotResult._1
+        val newOpponent = shotResult._2
+        val result = shotResult._3
+        result match {
+            case 0 => UI.display("It's a miss")
+            case 1 => UI.display("It's a hit")
+            case 2 => {
+                UI.display("It's a sink")
+                if(newOpponent.isDead){
+                    return (newPlayer, turn)
                 }
-                val newGameState = GameState(flips, correct)
-                printGameState(newGameState)
-                mainLoop(newGameState, random)
             }
-            case 'N' => {
-                savedGames = saveGame(savedGames, gameState)
-                mainLoop(GameState(0,0), random)
+        }
+        play(newOpponent, newPlayer, random, turn + 1)
+    }
+    @tailrec
+    def game(gameState: GameState, random: Random): Unit = {
+        var resultGame:(Player, Int) = null
+        if(gameState.isPlayerOneTurn)
+            resultGame = play(gameState.playerOne, gameState.playerTwo, random, 1)
+        else
+            resultGame = play(gameState.playerTwo, gameState.playerOne, random, 1)
+        UI.display(resultGame._1.name + " just won in " + resultGame._2 + " turn !")
+        if(gameState.playerOne.isHuman || gameState.playerTwo.isHuman){
+            UI.display("Do you want to change gamemode ?")
+            if(In.promptForYesNo("Play again ?")){
+                val players = createPlayers(random, gameState.gamemode)
+                game(GameState(!gameState.isPlayerOneTurn, players._1 , players._2, gameState.gamemode), random)
             }
-            case 'I' => {
-                savedGames.map(save => printGameState(save))
-                mainLoop(gameState, random)
+            else{
+                return
             }
-            case _ => {
-                println("Game Over !")
-
-            }
-        }*/
+        }
+    }
+    @tailrec
+    def main(random: Random): Unit = {
+        val gamemode = In.promptForGamemode()
+        if(gamemode._1 != 3){
+            val players = createPlayers(random, gamemode)
+            //val players = (Player("Joueur 1", false, (random) => Position(random.nextInt(10), random.nextInt(10)), List[Boat](Boat(true, List(Position(5,5), Position(5,6))))),Player("Joueur 2", false, (random) => Position(random.nextInt(10), random.nextInt(10)), List[Boat](Boat(true, List(Position(5,5), Position(5,6))))))
+            game(GameState(random.nextInt(2) == 0, players._1, players._2, gamemode), random)
+            main(random)
+        }
+        else{
+            UI.display("Benchmark")
+            //create easy AI
+            //create medium AI
+            //create hard AI
+            //100 games easy-medium
+            //100 games medium-hard
+            //100 games easy-hard
+        }
+    }
+    main(Random)
+}
