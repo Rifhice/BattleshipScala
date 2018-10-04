@@ -12,11 +12,11 @@ object BatailleNavale extends App {
 
     val UI:GUI = TerminalGUI()
     val In:Input = TerminalInput()
-    val boats:List[(String, Int)] = List[(String,Int)](("Destroyer", 2)/*, ("Submarine", 3), ("Cruiser", 3), ("Battleship", 4), ("Carrier", 5)*/)
+    val boats:List[(String, Int)] = List[(String,Int)](("Destroyer", 2), ("Submarine", 3), ("Cruiser", 3), ("Battleship", 4), ("Carrier", 5))
 
     def createOneHumanPlayer(random: Random, name: String): Player = {
         UI.display(name + " enter your boats.")
-        val player1 = Player(name, true, (random) => In.getPosition, In.promptAllBoats(boats))
+        val player1 = Player(name, true, (random: Random, playerState:PlayerState) => In.getPosition, In.promptAllBoats(boats))
         In.pressAnyKey(name + " press enter when you've finished reading !")
         player1
     }
@@ -33,7 +33,15 @@ object BatailleNavale extends App {
             case 2 => {
                 val AiDifficulty = gamemode._2
                 val player1 = createOneHumanPlayer(random, "Player 1")
-                val player2 = Player("Joueur 2", false, (random) => Position(random.nextInt(Grid.width), random.nextInt(Grid.height)), List[Boat](Boat("MyBoat", true, List(Position(5,5)))))
+                var input: (Random, PlayerState) => Position = null
+                println(AiDifficulty)
+                if(AiDifficulty == 1) 
+                    input = AiAlgorithm.easy
+                else if(AiDifficulty == 2)
+                    input = AiAlgorithm.medium
+                else
+                    input = AiAlgorithm.hard
+                val player2 = Player("Joueur 2", false, input, AiAlgorithm.aiBoatPlacing(random, boats))
                 (player1, player2)
             }
         }
@@ -51,7 +59,7 @@ object BatailleNavale extends App {
             UI.displayGrid(Grid.width, Grid.height, player.playerState)
             UI.display(player.name + " please enter a position to shoot !")
         }
-        val position = player.input(random)
+        val position = player.input(random, player.playerState)
         UI.display(player.name + " just shot at " + position.x + " " + position.y)
         val shotResult = player.shoot(position, opponent)
         val newPlayer = shotResult._1
@@ -60,9 +68,9 @@ object BatailleNavale extends App {
         val boat = shotResult._4
         result match {
             case 0 => UI.display("It's a miss")
-            case 1 => UI.display("You just hit a " + boat.name)
+            case 1 => UI.display("It's a hit on a " + boat.name)
             case 2 => {
-                UI.display("You just sink a " + boat.name)
+                UI.display("A " + boat.name + " just sank !")
                 if(newOpponent.isDead){
                     return (newPlayer, turn)
                 }
