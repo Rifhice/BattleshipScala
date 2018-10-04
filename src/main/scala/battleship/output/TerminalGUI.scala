@@ -2,9 +2,10 @@ package battleship.output
 
 import scala.collection.mutable.ListBuffer
 import battleship.model._
-
+import scala.annotation.tailrec
 case class TerminalGUI() extends GUI{
     def createBoatSelectionGrid(width: Int, height: Int, boats: List[Boat]): List[String] = {
+        @tailrec
         def createGridAux(width: Int, height: Int, x: Int, y: Int, current: StringBuilder, list: ListBuffer[String]): List[String] = {
             var (newX, newY) = (x, y)
             if(!(x == width && y == height)){
@@ -38,6 +39,7 @@ case class TerminalGUI() extends GUI{
     }
 
     private def createPlayerGrid(width: Int, height: Int, hitCells:List[Position], listBoat: List[Boat]): List[String] = {
+        @tailrec
         def createGridAux(width: Int, height: Int, x: Int, y: Int, current: StringBuilder, list: ListBuffer[String]): List[String] = {
             var (newX, newY) = (x, y)
             if(!(x == width && y == height)){
@@ -78,6 +80,7 @@ case class TerminalGUI() extends GUI{
     }
 
     private def createPlayerShotGrid(width: Int, height: Int, shotCells:List[(Int, Position)]): List[String] = {
+        @tailrec
         def createGridAux(width: Int, height: Int, x: Int, y: Int, current: StringBuilder, list: ListBuffer[String]): List[String] = {
             var (newX, newY) = (x, y)
             if(!(x == width && y == height)){

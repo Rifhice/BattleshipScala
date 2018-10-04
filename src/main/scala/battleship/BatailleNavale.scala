@@ -4,6 +4,12 @@ import battleship.input._
 import battleship.output._
 import battleship.model._
 import scala.annotation.tailrec
+
+import java.io.{BufferedWriter, FileWriter}
+import scala.collection.JavaConversions._
+import scala.collection.mutable.ListBuffer
+import au.com.bytecode.opencsv.CSVWriter
+
 import scala.util.Random
 
 case class GameState(isPlayerOneTurn: Boolean, playerOne: Player, playerTwo: Player, gamemode: (Int, Int))
@@ -48,6 +54,10 @@ object BatailleNavale extends App {
     }
     @tailrec
     def play(player: Player, opponent: Player, random: Random, turn: Int): (Player, Int) = {
+        def toDisplayOrNotToDisplay(message:String) = {
+            if(player.isHuman || opponent.isHuman)
+                UI.display(message)
+        }
         if(opponent.isHuman && turn != 1){
             In.pressAnyKey(opponent.name + " press enter when you've finished reading !")
         }
@@ -60,17 +70,17 @@ object BatailleNavale extends App {
             UI.display(player.name + " please enter a position to shoot !")
         }
         val position = player.input(random, player.playerState)
-        UI.display(player.name + " just shot at " + position.x + " " + position.y)
+        toDisplayOrNotToDisplay(player.name + " just shot at " + position.x + " " + position.y)
         val shotResult = player.shoot(position, opponent)
         val newPlayer = shotResult._1
         val newOpponent = shotResult._2
         val result = shotResult._3
         val boat = shotResult._4
         result match {
-            case 0 => UI.display("It's a miss")
-            case 1 => UI.display("It's a hit on a " + boat.name)
+            case 0 => toDisplayOrNotToDisplay("It's a miss")
+            case 1 => toDisplayOrNotToDisplay("It's a hit on a " + boat.name)
             case 2 => {
-                UI.display("A " + boat.name + " just sank !")
+                toDisplayOrNotToDisplay("A " + boat.name + " just sank !")
                 if(newOpponent.isDead){
                     return (newPlayer, turn)
                 }
@@ -97,6 +107,27 @@ object BatailleNavale extends App {
             }
         }
     }
+    def hundredGames(gameState: GameState, random: Random): ((String, Int), (String, Int)) = {
+        def hundredGamesAux(gameState: GameState, random: Random, cpt: Int, record : ((String, Int), (String, Int)) ): ((String, Int), (String, Int)) = {
+            if(cpt == 100){
+                record
+            }
+            else{
+                var resultGame:(Player, Int) = null
+                if(gameState.isPlayerOneTurn)
+                    resultGame = play(gameState.playerOne, gameState.playerTwo, random, 1)
+                else
+                    resultGame = play(gameState.playerTwo, gameState.playerOne, random, 1)
+                var newRecord: ((String, Int), (String, Int)) = null
+                if(resultGame._1.name == record._1._1)
+                    newRecord = ( (record._1._1, record._1._2 + 1), record._2 )
+                else if(resultGame._1.name == record._2._1) 
+                    newRecord = (  record._1 , (record._2._1, record._2._2 + 1) )
+                hundredGamesAux(GameState(!gameState.isPlayerOneTurn, gameState.playerOne, gameState.playerTwo, (0,0)), random, cpt + 1, newRecord)
+            }
+        }
+        hundredGamesAux(gameState, random, 0, ((gameState.playerOne.name, 0), (gameState.playerTwo.name, 0)))
+    } 
     @tailrec
     def main(random: Random): Unit = {
         val gamemode = In.promptForGamemode()
@@ -107,14 +138,25 @@ object BatailleNavale extends App {
             main(random)
         }
         else{
-            UI.display("Benchmark")
-            //create easy AI
-            //create medium AI
-            //create hard AI
-            //100 games easy-medium
-            //100 games medium-hard
-            //100 games easy-hard
+            val easy = Player("Ai level easy", false, AiAlgorithm.easy, AiAlgorithm.aiBoatPlacing(Random, boats))
+            val medium = Player("Ai level medium", false, AiAlgorithm.medium, AiAlgorithm.aiBoatPlacing(Random, boats))
+            val hard = Player("Ai level hard", false, AiAlgorithm.hard, AiAlgorithm.aiBoatPlacing(Random, boats))
+            val resEasyMedium = hundredGames(GameState(true, easy, medium, null), random)
+            val resEasyHard = hundredGames(GameState(true, easy, hard, null), random)
+            val resMediumHard = hundredGames(GameState(true, medium, hard, null), random)
+            saveRecords(List[((String, Int), (String, Int))](resEasyMedium, resEasyHard, resMediumHard))
+            UI.display("A csv file with the results has been created !")
         }
+    }
+    def saveRecords(records: List[((String, Int), (String, Int))]) = {
+        val outputFile = new BufferedWriter(new FileWriter("./output.csv"))
+        val csvWriter = new CSVWriter(outputFile)
+        val csvSchema = Array("AI name", "score", "AI Name2", "score2")
+        val resEasyMedium = Array[String](records(0)._1._1, records(0)._1._2.toString, records(0)._2._1, records(0)._2._2.toString)
+        val resEasyHard = Array[String](records(1)._1._1, records(1)._1._2.toString, records(1)._2._1, records(1)._2._2.toString)
+        val resMediumHard = Array[String](records(2)._1._1, records(2)._1._2.toString, records(2)._2._1, records(2)._2._2.toString)
+        csvWriter.writeAll(List[Array[String]](csvSchema, resEasyMedium, resEasyHard, resMediumHard))
+        outputFile.close()
     }
     main(Random)
 }

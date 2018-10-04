@@ -42,17 +42,14 @@ object AiAlgorithm{
     }
 
     def easy(random: Random, playerState: PlayerState): Position = {
-        println("Easy")
         Position(random.nextInt(Grid.width), random.nextInt(Grid.height))
     }
 
     def medium(random: Random, playerState: PlayerState): Position = {
-        println("Medium")
         Position(random.nextInt(Grid.width), random.nextInt(Grid.height))
     }
 
     def hard(random: Random, playerState: PlayerState): Position = {
-        println("Hard")
         Position(random.nextInt(Grid.width), random.nextInt(Grid.height))
     }
 }
