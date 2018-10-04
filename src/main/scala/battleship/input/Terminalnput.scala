@@ -71,16 +71,17 @@ case class TerminalInput() extends Input{
         }
     }
 
-    def promptAllBoats(): List[Boat] = {
+    def promptAllBoats(boatSize: List[(String, Int)]): List[Boat] = {
         @tailrec
-        def createAllBoatsAux(boatSize: List[Int], boatList:List[Boat]): List[Boat] = {
+        def createAllBoatsAux(boatSize: List[(String, Int)], boatList:List[Boat]): List[Boat] = {
             if(boatSize.size == 0){
                 boatList
             }
             else{
+                UI.display("Enter values for a " + boatSize.head._1 + " of size " + boatSize.head._2 + ".")
                 val direction = getDirection
-                val startingPosition = promptStartingBoatPosition(boatSize.head, direction)
-                val newBoat = Boat.createBoat(startingPosition, boatSize.head, direction)
+                val startingPosition = promptStartingBoatPosition(boatSize.head._2, direction)
+                val newBoat = Boat.createBoat(boatSize.head._1, startingPosition, boatSize.head._2, direction)
                 if(boatList.filter(boat => newBoat.positions.filter(position => boat.collide(position)).length != 0).length != 0){
                     UI.display("The boat intersect with an existing one !")
                     createAllBoatsAux(boatSize, boatList)
@@ -91,7 +92,7 @@ case class TerminalInput() extends Input{
                 }
             }
         }
-        createAllBoatsAux(Boat.boatSize, List[Boat]())     
+        createAllBoatsAux(boatSize, List[Boat]())     
     }
 
     def promptStartingBoatPosition(size: Int, isHorizontal: Boolean): Position = {

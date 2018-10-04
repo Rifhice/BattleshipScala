@@ -2,7 +2,7 @@ package battleship.model
 
 import scala.annotation.tailrec
 
-class Boat(val isHorizontal: Boolean, val positions: List[Position]){
+class Boat(val name: String, val isHorizontal: Boolean, val positions: List[Position]){
     def isOn(x :Int, y :Int) : Boolean = positions.filter(pos => pos.x == x && pos.y == y).size != 0
     //def collide(boat: Boat): Boolean = boat.positions.filter
     def isDead(): Boolean = positions.filter(position => position.isHit).length == positions.length
@@ -10,16 +10,14 @@ class Boat(val isHorizontal: Boolean, val positions: List[Position]){
 }    
 object Boat{
 
-    val boatSize = List[Int](1/*,2,1,1,1,2,2,2,2,3,3,3,4,4,5*/)
+    def apply(name:String, isHorizontal: Boolean, positions: List[Position]) = new Boat(name, isHorizontal, positions)
 
-    def apply(isHorizontal: Boolean, positions: List[Position]) = new Boat(isHorizontal, positions)
-
-    def createBoat(startingPosition: Position, size: Int, isHorizontal: Boolean): Boat = {
+    def createBoat(name: String, startingPosition: Position, size: Int, isHorizontal: Boolean): Boat = {
         var positions = List[Position](Position(startingPosition.x, startingPosition.y))
         @tailrec
         def createBoatAux(lastposition: Position, size: Int, isHorizontal: Boolean, positions: List[Position]): Boat = {
             if(size == 0){
-                Boat(isHorizontal, positions.toList)
+                Boat(name, isHorizontal, positions.toList)
             }
             else{
                 if(isHorizontal) {

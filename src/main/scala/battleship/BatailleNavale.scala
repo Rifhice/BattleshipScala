@@ -12,10 +12,11 @@ object BatailleNavale extends App {
 
     val UI:GUI = TerminalGUI()
     val In:Input = TerminalInput()
+    val boats:List[(String, Int)] = List[(String,Int)](("Destroyer", 2)/*, ("Submarine", 3), ("Cruiser", 3), ("Battleship", 4), ("Carrier", 5)*/)
 
     def createOneHumanPlayer(random: Random, name: String): Player = {
         UI.display(name + " enter your boats.")
-        val player1 = Player(name, true, (random) => In.getPosition, In.promptAllBoats)
+        val player1 = Player(name, true, (random) => In.getPosition, In.promptAllBoats(boats))
         In.pressAnyKey(name + " press enter when you've finished reading !")
         player1
     }
@@ -32,7 +33,7 @@ object BatailleNavale extends App {
             case 2 => {
                 val AiDifficulty = gamemode._2
                 val player1 = createOneHumanPlayer(random, "Player 1")
-                val player2 = Player("Joueur 2", false, (random) => Position(random.nextInt(Grid.width), random.nextInt(Grid.height)), List[Boat](Boat(true, List(Position(5,5)))))
+                val player2 = Player("Joueur 2", false, (random) => Position(random.nextInt(Grid.width), random.nextInt(Grid.height)), List[Boat](Boat("MyBoat", true, List(Position(5,5)))))
                 (player1, player2)
             }
         }
@@ -56,11 +57,12 @@ object BatailleNavale extends App {
         val newPlayer = shotResult._1
         val newOpponent = shotResult._2
         val result = shotResult._3
+        val boat = shotResult._4
         result match {
             case 0 => UI.display("It's a miss")
-            case 1 => UI.display("It's a hit")
+            case 1 => UI.display("You just hit a " + boat.name)
             case 2 => {
-                UI.display("It's a sink")
+                UI.display("You just sink a " + boat.name)
                 if(newOpponent.isDead){
                     return (newPlayer, turn)
                 }
