@@ -51,12 +51,10 @@ object AiAlgorithm{
 
     def hard(random: Random, playerState: PlayerState): Position = {
         val lastNonMissShot = getLastNonMissShot(playerState.lastShotResults)
-        //println(playerState.lastShotResults,  lastNonMissShot.getOrElse("None"))
         if(playerState.lastShotResults.isEmpty  || lastNonMissShot.isEmpty || lastNonMissShot.get._1 == 2){
             getNewPosition(random, playerState)
         }
         else{
-            //println("Je suis intelligent !")
             getClosePosition(random, lastNonMissShot.get._2, playerState, 0)
         }
     }
@@ -101,7 +99,7 @@ object AiAlgorithm{
                 case 2 => newPos = Position(lastPos.x, lastPos.y - 1)
                 case 3 => newPos = Position(lastPos.x - 1, lastPos.y)
             }
-            if(/*newPos.x >= 0 && newPos.x < Grid.width && newPos.y >= 0 && newPos.y < Grid.height && */playerState.lastShotResults.filter(shot => shot._2.x == newPos.x && shot._2.y == newPos.y).length != 0){
+            if(playerState.lastShotResults.filter(shot => shot._2.x == newPos.x && shot._2.y == newPos.y).length != 0){
                 getClosePosition(random, lastPos, playerState, cpt + 1)
             }
             else{
