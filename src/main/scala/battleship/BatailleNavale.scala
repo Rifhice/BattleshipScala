@@ -118,12 +118,13 @@ object BatailleNavale extends App {
                     resultGame = play(gameState.playerOne, gameState.playerTwo, random, 1)
                 else
                     resultGame = play(gameState.playerTwo, gameState.playerOne, random, 1)
+                UI.display("Game #" + cpt + " : " + resultGame._1.name + " just won in " + resultGame._2 + " turn !")
                 var newRecord: ((String, Int), (String, Int)) = null
                 if(resultGame._1.name == record._1._1)
                     newRecord = ( (record._1._1, record._1._2 + 1), record._2 )
                 else if(resultGame._1.name == record._2._1) 
                     newRecord = (  record._1 , (record._2._1, record._2._2 + 1) )
-                hundredGamesAux(GameState(!gameState.isPlayerOneTurn, gameState.playerOne, gameState.playerTwo, (0,0)), random, cpt + 1, newRecord)
+                hundredGamesAux(GameState(!gameState.isPlayerOneTurn, Player(gameState.playerOne.name, gameState.playerOne.isHuman, gameState.playerOne.input, AiAlgorithm.aiBoatPlacing(random, boats)), Player(gameState.playerTwo.name, gameState.playerTwo.isHuman, gameState.playerTwo.input, AiAlgorithm.aiBoatPlacing(random, boats)), (0,0)), random, cpt + 1, newRecord)
             }
         }
         hundredGamesAux(gameState, random, 0, ((gameState.playerOne.name, 0), (gameState.playerTwo.name, 0)))
