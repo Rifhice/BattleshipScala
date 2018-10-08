@@ -8,19 +8,21 @@ case class TerminalInput() extends Input{
 
     val UI:TerminalGUI = TerminalGUI()
 
-    def getIntTuple(): (Int, Int) = { 
+    def getInt(message: String): Int = {
         try{
-            print("Input the x : ")
+            print(message)
             System.out.flush
-            val x = scala.io.StdIn.readInt()
-            print("Input the y : ")
-            System.out.flush
-            val y = scala.io.StdIn.readInt()
-            (x,y)
+            scala.io.StdIn.readInt()
         }
         catch{
-            case err: NumberFormatException => getIntTuple()
+            case err: NumberFormatException => getInt(message)
         }
+    }
+
+    def getIntTuple(): (Int, Int) = { 
+        val x = getInt("Input the x : ")
+        val y = getInt("Input the y : ")
+        (x,y)
     }
 
     def getPosition(): Position = { 
