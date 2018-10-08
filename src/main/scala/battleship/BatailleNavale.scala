@@ -107,9 +107,9 @@ object BatailleNavale extends App {
             }
         }
     }
-    def hundredGames(gameState: GameState, random: Random): ((String, Int), (String, Int)) = {
-        def hundredGamesAux(gameState: GameState, random: Random, cpt: Int, record : ((String, Int), (String, Int)) ): ((String, Int), (String, Int)) = {
-            if(cpt == 100){
+    def multipleGames(gameState: GameState, random: Random, nbGames: Int): ((String, Int), (String, Int)) = {
+        def multipleGamesAux(gameState: GameState, random: Random, cpt: Int, record : ((String, Int), (String, Int)) ): ((String, Int), (String, Int)) = {
+            if(cpt == nbGames){
                 record
             }
             else{
@@ -124,10 +124,10 @@ object BatailleNavale extends App {
                     newRecord = ( (record._1._1, record._1._2 + 1), record._2 )
                 else if(resultGame._1.name == record._2._1) 
                     newRecord = (  record._1 , (record._2._1, record._2._2 + 1) )
-                hundredGamesAux(GameState(!gameState.isPlayerOneTurn, Player(gameState.playerOne.name, gameState.playerOne.isHuman, gameState.playerOne.input, AiAlgorithm.aiBoatPlacing(random, boats)), Player(gameState.playerTwo.name, gameState.playerTwo.isHuman, gameState.playerTwo.input, AiAlgorithm.aiBoatPlacing(random, boats)), (0,0)), random, cpt + 1, newRecord)
+                multipleGamesAux(GameState(!gameState.isPlayerOneTurn, Player(gameState.playerOne.name, gameState.playerOne.isHuman, gameState.playerOne.input, AiAlgorithm.aiBoatPlacing(random, boats)), Player(gameState.playerTwo.name, gameState.playerTwo.isHuman, gameState.playerTwo.input, AiAlgorithm.aiBoatPlacing(random, boats)), (0,0)), random, cpt + 1, newRecord)
             }
         }
-        hundredGamesAux(gameState, random, 0, ((gameState.playerOne.name, 0), (gameState.playerTwo.name, 0)))
+        multipleGamesAux(gameState, random, 0, ((gameState.playerOne.name, 0), (gameState.playerTwo.name, 0)))
     } 
     @tailrec
     def main(random: Random): Unit = {
@@ -142,9 +142,10 @@ object BatailleNavale extends App {
             val easy = Player("Ai level easy", false, AiAlgorithm.easy, AiAlgorithm.aiBoatPlacing(Random, boats))
             val medium = Player("Ai level medium", false, AiAlgorithm.medium, AiAlgorithm.aiBoatPlacing(Random, boats))
             val hard = Player("Ai level hard", false, AiAlgorithm.hard, AiAlgorithm.aiBoatPlacing(Random, boats))
-            val resEasyMedium = hundredGames(GameState(true, easy, medium, null), random)
-            val resEasyHard = hundredGames(GameState(true, easy, hard, null), random)
-            val resMediumHard = hundredGames(GameState(true, medium, hard, null), random)
+            val nbGames = 100
+            val resEasyMedium = multipleGames(GameState(true, easy, medium, null), random, nbGames)
+            val resEasyHard = multipleGames(GameState(true, easy, hard, null), random, nbGames)
+            val resMediumHard = multipleGames(GameState(true, medium, hard, null), random, nbGames)
             saveRecords(List[((String, Int), (String, Int))](resEasyMedium, resEasyHard, resMediumHard))
             UI.display("A csv file with the results has been created !")
         }
