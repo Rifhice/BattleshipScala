@@ -161,6 +161,7 @@ object BatailleNavale extends App {
                     resultGame = play(gameState.playerOne, gameState.playerTwo, random, 1)
                 else
                     resultGame = play(gameState.playerTwo, gameState.playerOne, random, 1)
+                UI.display("\033[2A")
                 UI.display("Game #" + cpt + " : " + resultGame._1.name + " just won in " + resultGame._2 + " turn !")
                 var newRecord: ((String, Int), (String, Int)) = null
                 if(resultGame._1.name == record._1._1)
@@ -192,6 +193,7 @@ object BatailleNavale extends App {
             val easy = Player("Ai level easy", false, AiAlgorithm.easy, AiAlgorithm.aiBoatPlacing(Random, boats))
             val medium = Player("Ai level medium", false, AiAlgorithm.medium, AiAlgorithm.aiBoatPlacing(Random, boats))
             val hard = Player("Ai level hard", false, AiAlgorithm.hard, AiAlgorithm.aiBoatPlacing(Random, boats))
+            val expert = Player("Ai level expert", false, AiAlgorithm.expert, AiAlgorithm.aiBoatPlacing(Random, boats))
             val nbGames = In.getInt("How many games do you want : ")
             val resEasyMedium = multipleGames(GameState(true, easy, medium, null), random, nbGames)
             val resEasyHard = multipleGames(GameState(true, easy, hard, null), random, nbGames)
